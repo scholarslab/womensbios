@@ -1,21 +1,23 @@
 version: '2'
 services:
   solr:
-    image: scholarslab/wbsolr:1.0
+    image: mossiso/womensbios:solr
     container_name: womensbios_solr
     restart: always
     ports:
-     - "8983:8983"
+     - ${SOLR_PORTS}
   womenbios:
-    build: 
-      context: .
-    image: scholarslab/womensbios:1.0
+    # Uncomment for development. Requires the Dockerfile to exist.
+    #build: 
+    #  context: .
+    image: mossiso/womensbios:static
     container_name: womensbios_static
     depends_on:
       - solr
     ports:
-      - "80:80"
+      - ${PORTS}
     restart: always
-    # Uncomment only when developing, requires an existing static-content folder with all the static files
+    # Uncomment for development. Requires an existing static-content
+    # folder with all the static files.
     #volumes:
     #  - ./static-content:/usr/share/nginx/html
