@@ -12,7 +12,7 @@ Steps for setting up a local development environment for the project
   - `git clone https://github.com/scholarslab/womensbios.git`
   - For developing (editing the HTML, CSS, JS) of the website, the static files need to exist in a folder called `static-content`.
   - Then comment out the line containing 'static-content' in the Dockerfile. (make it look like this)
-    ```yml
+    ```YAML
       FROM nginx
       COPY default.conf /etc/nginx/conf.d/default.conf
 
@@ -21,7 +21,7 @@ Steps for setting up a local development environment for the project
       #COPY static-content /usr/share/nginx/html
     ```
   - And uncomment the four lines in docker-compose.yml (make it look like this)
-    ```yml
+    ```YAML
     version: '2'
     services:
       solr:
@@ -77,7 +77,7 @@ To set up the production server, set up like normal for a new domain:
 - Create a `.env` file in the folder with the `docker-compose.yml` file
   - Port numbers must be above 1234, and not be taken already.
   - The file should look like this
-    ```yml
+    ```
       PORTS=8xxx:80
       SOLR_PORTS=9xxx:8983
     ```
@@ -301,6 +301,7 @@ The basic steps required to create the images are outlined below, with detailed 
 
         }
       ```
+
 ### Making the STATIC image
 - Uncomment the COPY command in the Dockerfile. Comment out after the docker build command.
   - `COPY static-content /usr/share/nginx/html`
@@ -331,7 +332,7 @@ isn't working).
 - Add these lines at about line 120, which we got from the schema.xml file from
   the old install (`/usr/local/projects/womensbios/current/solr-home/conf/schema.xml`):
 
-  ```html
+  ```XML
   <field name="ref" type="text_general" indexed="true" multiValued="true" stored="true"/>
   <field name="title" type="text_general" indexed="true" multiValued="true" stored="true"/>
   <field name="author" type="text_general" indexed="true" multiValued="true" stored="true"/>
@@ -358,7 +359,8 @@ isn't working).
   <copyField source="image" dest="fulltext"/>                                   
   <copyField source="ref" dest="fulltext"/> 
   ```
-- Note: the 'type' was changed from 'text' to 'text_general' according to latest version of Solr.
+
+- *Note:* the 'type' was changed from 'text' to 'text_general' according to latest version of Solr.
 - This forces the fields to be of a certain type. This keeps our sanity when
   importing the data, as the date fields are messed up and crazy, dirty data to
   the extreme.
@@ -382,25 +384,29 @@ isn't working).
     - `dos2unix alldata.json`
 - Fix the file by:
   - delete these lines from the top of the file
-    ```json
-    {                                                                                   
-    "responseHeader":{                                                                
-      "status":0,                                                                     
-      "QTime":1,                                                                      
-      "params":{                                                                      
-        "indent":"on",                                                                
-        "wt":"json",                                                                  
-        "rows":"20000",                                                               
-        "version":"2.2",                                                              
-        "start":"0",                                                                  
-        "q":"*:*"}},                                                                  
-    "response":{"numFound":1264,"start":0,"docs":[ 
+
+    ```JSON
+      {
+      "responseHeader":{
+        "status":0,
+        "QTime":1,
+        "params":{
+          "indent":"on",
+          "wt":"json",
+          "rows":"20000",
+          "version":"2.2",
+          "start":"0",
+          "q":"*:*"}},
+      "response":{"numFound":1264,"start":0,"docs":[
     ```
+
   - and replace with a single opening bracket `[`
   - and delete these lines from the bottom of the file
-    ```json
-    }}                                                                           
+
+    ```JSON
+      }}
     ```
+
   - You can move the closing bracket to the last line if you feel so inclined.
   - Add the missing id 'a748' on line 17876 (or search for 'a749' and it's the object preceding).
 
@@ -419,7 +425,8 @@ This change allows the cross origin resource sharing to happen.
   - `docker cp temp-solr:/opt/solr/server/solr-webapp/webapp/WEB-INF/web.xml web.xml`
 - Add to the web.xml right after the `<web-app>` tag
   - See (http://laurenthinoul.com/how-to-enable-cors-in-solr/)
-  ```xml
+
+  ```XML
   <filter>
     <filter-name>cross-origin</filter-name>
     <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
