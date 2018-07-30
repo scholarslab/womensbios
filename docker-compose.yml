@@ -1,7 +1,7 @@
 version: '2'
 services:
   solr:
-    image: registry.gitlab.com/scholars-lab/womensbios/solr:1.0
+    image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
     container_name: womensbios_solr
     restart: always
     ports:
@@ -10,7 +10,7 @@ services:
     # Uncomment for development. Requires the Dockerfile to exist.
     build: 
       context: .
-    image: registry.gitlab.com/scholars-lab/womensbios/static:1.1
+    image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.1
     container_name: womensbios_static
     depends_on:
       - solr
