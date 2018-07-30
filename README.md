@@ -16,35 +16,32 @@ Steps for setting up a local development environment for the project
       FROM nginx
       COPY default.conf /etc/nginx/conf.d/default.conf
 
-      # Comment out for development and production
       # Only leave uncommented when making the production ready image
       #COPY static-content /usr/share/nginx/html
     ```
   - And uncomment the four lines in docker-compose.yml (make it look like this)
     ```YAML
-    version: '2'
-    services:
-      solr:
-        image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
-        container_name: womensbios_solr
-        restart: always
-        ports:
-         - ${SOLR_PORTS}
-      womenbios:
-        # Uncomment for development. Requires the Dockerfile to exist.
-        build: 
-          context: .
-        image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.1
-        container_name: womensbios_static
-        depends_on:
-          - solr
-        ports:
-          - ${PORTS}
-        restart: always
-        # Uncomment for development. Requires an existing static-content
-        # folder with all the static files.
-        volumes:
-          - ./static-content:/usr/share/nginx/html
+      version: '2'
+      services:
+        solr:
+          image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
+          container_name: womensbios_solr
+          restart: always
+          ports:
+           - ${SOLR_PORTS}
+        womenbios:
+          # Uncomment next two lines for development. Requires the Dockerfile to exist.
+          build: 
+            context: .
+          image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.1
+          container_name: womensbios_static
+          depends_on:
+            - solr
+          ports:
+            - ${PORTS}
+          restart: always
+          volumes:
+            - ./static-content:/usr/share/nginx/html
     ```
 
 ## Docker commands
@@ -90,8 +87,6 @@ To set up the production server, set up like normal for a new domain:
 - Update the `static-content/solrSearch.js` file to use the correct local port for Solr (as defined in the .env file above).
   - change this line to the first port used above in the SOLR_PORT line, and the domain name to `womensbios.lib.virinia.edu`
   - `  "server": "http://womensbios.lib.virginia.edu:9xxx/solr/wbcore/select?",`
-- Upload the new solrSearch.js file to the running container:
-  - `docker cp solrSearch.js womensbios_static:/usr/share/nginx/html/solrSearch.js`
 
 
 ********************************
@@ -332,7 +327,7 @@ isn't working).
 - Add these lines at about line 120, which we got from the schema.xml file from
   the old install (`/usr/local/projects/womensbios/current/solr-home/conf/schema.xml`):
 
-  ```XML
+  ```xml
   <field name="ref" type="text_general" indexed="true" multiValued="true" stored="true"/>
   <field name="title" type="text_general" indexed="true" multiValued="true" stored="true"/>
   <field name="author" type="text_general" indexed="true" multiValued="true" stored="true"/>
@@ -426,7 +421,7 @@ This change allows the cross origin resource sharing to happen.
 - Add to the web.xml right after the `<web-app>` tag
   - See (http://laurenthinoul.com/how-to-enable-cors-in-solr/)
 
-  ```XML
+  ```xml
   <filter>
     <filter-name>cross-origin</filter-name>
     <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>

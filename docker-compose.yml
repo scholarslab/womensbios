@@ -7,7 +7,7 @@ services:
     ports:
      - ${SOLR_PORTS}
   womenbios:
-    # Uncomment for development. Requires the Dockerfile to exist.
+    # Uncomment next two lines for development. Requires the Dockerfile to exist.
     build: 
       context: .
     image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.1
@@ -17,7 +17,5 @@ services:
     ports:
       - ${PORTS}
     restart: always
-    # Uncomment for development. Requires an existing static-content
-    # folder with all the static files.
     volumes:
       - ./static-content:/usr/share/nginx/html
