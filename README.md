@@ -81,12 +81,17 @@ To set up the production server, set up like normal for a new domain:
     Notes:
     - `PORTS`: the first port is the server port, where Apache/Nginx will send requests; the second port is the Docker internal port.
     - `SOLR_PORTS`: the first port is the server port used for solr; the second is the internal Docker port number.
-- While in the above directory, start the containers
-  - `docker-compose up -d` 
-  - use `-d` so that the process runs in the background
 - Update the `static-content/solrSearch.js` file to use the correct local port for Solr (as defined in the .env file above).
   - change this line to the first port used above in the SOLR_PORT line, and the domain name to `womensbios.lib.virinia.edu`
   - `  "server": "http://womensbios.lib.virginia.edu:9xxx/solr/wbcore/select?",`
+- Comment out two lines in `docker-compose.yml`
+  ```
+    #build: 
+    #  context: .
+  ```
+- While in the above directory, start the containers
+  - `docker-compose up -d` 
+  - use `-d` so that the process runs in the background
 
 
 ********************************
