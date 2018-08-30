@@ -18,8 +18,9 @@ services:
     depends_on:
       - womensbios_solr
     restart: always
-    volumes:
-      - ./static-content:/usr/share/nginx/html
+    # Uncomment next two lines for development, when needing to edit the static files
+    #volumes:
+    #  - ./static-content:/usr/share/nginx/html
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=thenetwork"

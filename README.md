@@ -68,6 +68,13 @@ To set up the production server, set up like normal for a new domain:
 
 - Copy just the docker-compose.yml file from this repo into the webhosting directory (ex. /var/www/womensbios...)
   - `wget https://gitlab.com/scholars-lab/womensbios/raw/master/docker-compose.yml`
+- Comment out or delete the two 'volume' lines in  'womensbios_static' section of the docker-compose.yml file
+- 
+  ```
+  #volumes:
+  #    - ./static-content:/usr/share/nginx/html
+
+  ```
 - Maker sure these two lines in `docker-compose.yml`
   ```
     #build: 
