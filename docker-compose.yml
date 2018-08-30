@@ -5,7 +5,7 @@ services:
     container_name: womensbios_solr
     restart: always
     ports:
-     - ${SOLR_PORTS}
+      - 8983:8983
     labels:
       - "traefik.enable=false"
 

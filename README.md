@@ -66,25 +66,9 @@ See below for instructions: Making the SOLR image
 # Production
 To set up the production server, set up like normal for a new domain:
 
-- Put the files in this repo into the webhosting directory (ex. /var/www/html)
-  - `git clone https://github.com/scholarslab/womensbios.git .`
-- Create a web config file that uses a proxy
-  - Apache: include lines for ProxyPass, ProxyPassReverse, and ProxyPreserveHost on 
-  - Nginx: include lines for upstream and in the location section use proxy_* directives
-- Create a `.env` file in the folder with the `docker-compose.yml` file
-  - Port numbers must be above 1234, and not be taken already.
-  - The file should look like this
-    ```
-      PORTS=8xxx:80
-      SOLR_PORTS=9xxx:8983
-    ```
-    Notes:
-    - `PORTS`: the first port is the server port, where Apache/Nginx will send requests; the second port is the Docker internal port.
-    - `SOLR_PORTS`: the first port is the server port used for solr; the second is the internal Docker port number.
-- Update the `static-content/solrSearch.js` file to use the correct local port for Solr (as defined in the .env file above).
-  - change this line to the first port used above in the SOLR_PORT line, and the domain name to `womensbios.lib.virinia.edu`
-  - `  "server": "http://womensbios.lib.virginia.edu:9xxx/solr/wbcore/select?",`
-- Comment out two lines in `docker-compose.yml`
+- Copy just the docker-compose.yml file from this repo into the webhosting directory (ex. /var/www/womensbios...)
+  - `wget https://gitlab.com/scholars-lab/womensbios/raw/master/docker-compose.yml`
+- Maker sure these two lines in `docker-compose.yml`
   ```
     #build: 
     #  context: .
