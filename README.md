@@ -9,7 +9,7 @@ of Solr for search?) running in Docker.
 Steps for setting up a local development environment for the project
 
 ## Clone the GitHub repo
-  - `git clone https://github.com/scholarslab/womensbios.git`
+  - `git clone https://gitlab.com/scholars-lab/womensbios.git`
   - For developing (editing the HTML, CSS, JS) of the website, the static files need to exist in a folder called `static-content`.
   - Then comment out the line containing 'static-content' in the Dockerfile. (make it look like this)
     ```YAML
