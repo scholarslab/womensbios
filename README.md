@@ -66,7 +66,11 @@ See below for instructions: Making the SOLR image
 # Production
 To set up the production server, set up like normal for a new domain:
 
-- Copy just the docker-compose.yml file from this repo into the webhosting directory (ex. /var/www/womensbios...)
+- Stop the running containers
+  - `docker-compose down --volume`
+- Delete the existing docker-compose.yml file
+  - `rm docker-compose.yml`
+- Copy just the docker-compose.yml file from the repo into the webhosting directory (ex. /var/www/womensbios...)
   - `wget https://gitlab.com/scholars-lab/womensbios/raw/master/docker-compose.yml`
 - Comment out or delete the two 'volume' lines in  'womensbios_static' section of the docker-compose.yml file
 - 
@@ -75,12 +79,12 @@ To set up the production server, set up like normal for a new domain:
   #    - ./static-content:/usr/share/nginx/html
 
   ```
-- Maker sure these two lines in `docker-compose.yml`
+- Maker sure these two lines in `docker-compose.yml` are commented out
   ```
     #build: 
     #  context: .
   ```
-- While in the above directory, start the containers
+- While in the directory with the docker-compose.yml file, start the containers
   - `docker-compose up -d` 
   - use `-d` so that the process runs in the background
 
