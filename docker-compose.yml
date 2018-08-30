@@ -1,21 +1,33 @@
 version: '2'
 services:
-  solr:
+  womensbios_solr:
     image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
     container_name: womensbios_solr
     restart: always
     ports:
      - ${SOLR_PORTS}
-  womenbios:
+    labels:
+      - "traefik.enable=false"
+
+  womenbios_static:
     # Uncomment next two lines for development. Requires the Dockerfile to exist.
-    build: 
-      context: .
-    image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.1
+    #build: 
+    #  context: .
+    image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.2
     container_name: womensbios_static
     depends_on:
-      - solr
-    ports:
-      - ${PORTS}
+      - womensbios_solr
     restart: always
     volumes:
       - ./static-content:/usr/share/nginx/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=thenetwork"
+      - "traefik.port=80"
+      - "traefik.backend=womensbios_static"
+      - "traefik.frontend.rule=Host:womensbios.lib.virginia.edu"
+
+networks:
+  default:
+    external:
+      name: thenetwork
