@@ -55,10 +55,10 @@ While in the directory with the docker-compose.yml file
   - the --volume removes the Docker volume
 
 ### To create/modify the STATIC image
-See below for instructions on how to build the STATIC image.
+See below for instructions: Making the STATIC image
 
 ### To create/modify the SOLR image
-See below for instructions on how to build the SOLR image.
+See below for instructions: Making the SOLR image
 
 
 
@@ -305,12 +305,12 @@ The basic steps required to create the images are outlined below, with detailed 
 ### Making the STATIC image
 - Uncomment the COPY command in the Dockerfile. Comment out after the docker build command.
   - `COPY static-content /usr/share/nginx/html`
-- To create the STATIC image, run the docker build command.
-  - `docker build -t registry.gitlab.com/scholars-lab/womensbios/wb-static:1.1 .`
+- To create the STATIC image, run the docker build command, and bump the tag number (in the line below as #.#)
+  - `docker build -t registry.gitlab.com/scholars-lab/womensbios/wb-static:#.# .`
 
 ### Push to remote repository
-- Push image to central repository 
-  - `docker push registry.gitlab.com/womensbios/wb-static:1.1`
+- Push image to central repository, using the correct tag version number
+  - `docker push registry.gitlab.com/scholars-lab/womensbios/wb-static:#.#`
 
 ## Create the SOLR image
 This uses a Dockerized solr to get solr up to date and keep the search
@@ -458,11 +458,11 @@ This change allows the cross origin resource sharing to happen.
   - `docker start temp-solr`
 
 ### Making the SOLR image
-- Create the SOLR image from the running 'temp-solr' container
-  - `docker commit --author "First_Name Last_Name name@email.com" --message "Image with data from womensbios" temp-solr registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0`
+- Create the SOLR image from the running 'temp-solr' container, updating the tag version number (seen in the line below as #.#)
+  - `docker commit --author "First_Name Last_Name name@email.com" --message "Image with data from womensbios" temp-solr registry.gitlab.com/scholars-lab/womensbios/wb-solr:#.#`
 - Stop and remove the temp image/container
   - `docker rm temp-solr`
 
 ### Push to remote repository
-- Push image to central repository 
-  - `docker push registry.gitlab.com/womensbios/wb-solr:1.0`
+- Push image to central repository, using the correct tag version number 
+  - `docker push registry.gitlab.com/scholars-lab/womensbios/wb-solr:#.#`
