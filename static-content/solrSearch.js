@@ -8,7 +8,7 @@
 "use strict";
 
 var SOLR_CONFIG = {
-  "server": "http://womensbios.lib.virginia.edu:8983/solr/wbcore/select?",
+  "server": "https://womensbios-backend.internal.lib.virginia.edu/solr/wbcore/select?",
   "defaultField": "fulltext",
   "rows": 2000
 };
@@ -170,7 +170,8 @@ function displayResult(searchRequest) {
         }
 
         var text = item.id + ". " + item.author + ", " + item.title;
-        resultList.innerHTML += "<li class='" + theClass + "'>" + "<a href='browse?bibl_id=" + item.id.trim() + "'>" + text + "</a></li>";
+        /*resultList.innerHTML += "<li class='" + theClass + "'>" + "<a href='browse?bibl_id=" + item.id.trim() + "'>" + text + "</a></li>";*/
+        resultList.innerHTML += "<li class='" + theClass + "'>" + "<a href='browse%3Fbibl_id=" + item.id.trim() + ".html'>" + text + "</a></li>";
       });
 }
 

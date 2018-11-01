@@ -275,7 +275,7 @@ p#subheading {
 	text-align: center;
 	padding: 5px 0px;
 	overflow: hidden;
-	background: url('http://womensbios.lib.virginia.edu/images/50white.png') repeat;
+	background: url('50white.png') repeat;
 	border-bottom: 1px solid #B39B95;
 }
 #subNav a {
@@ -455,7 +455,7 @@ td.mosaic img {
 	text-align: center;
 	padding: 5px 0px;
 	overflow: hidden;
-	background: url('http://womensbios.lib.virginia.edu/images/50white.png') repeat;
+	background: url('50white.png') repeat;
 	border-bottom: 1px solid #B39B95;
 }
 #page-nav a {
@@ -777,7 +777,7 @@ dd {
 .subnav {
 	text-align: center;
 	padding: 20px;
-	background: url('http://womensbios.lib.virginia.edu/images/50white.png') repeat;
+	background: url('50white.png') repeat;
 	border-bottom: 1px solid #B39B95;
 }
 

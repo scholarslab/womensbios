@@ -82,19 +82,19 @@
 }
 
 .paginate_disabled_previous {
-	background-image: url('http://womensbios.lib.virginia.edu/images/back_disabled.jpg');
+	background-image: url('https://womensbios.lib.virginia.edu/images/back_disabled.jpg');
 }
 
 .paginate_enabled_previous {
-	background-image: url('http://womensbios.lib.virginia.edu/images/back_enabled.jpg');
+	background-image: url('https://womensbios.lib.virginia.edu/images/back_enabled.jpg');
 }
 
 .paginate_disabled_next {
-	background-image: url('http://womensbios.lib.virginia.edu/images/forward_disabled.jpg');
+	background-image: url('https://womensbios.lib.virginia.edu/images/forward_disabled.jpg');
 }
 
 .paginate_enabled_next {
-	background-image: url('http://womensbios.lib.virginia.edu/images/forward_enabled.jpg');
+	background-image: url('https://womensbios.lib.virginia.edu/images/forward_enabled.jpg');
 }
 
 
