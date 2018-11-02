@@ -8,6 +8,11 @@ of Solr for search?) running in Docker.
 # Development
 Steps for setting up a local development environment for the project
 
+## Pre-requisits
+- Docker must be installed and running: https://www.docker.com/get-started
+- Traefik must be set up and running: https://traefik.io/
+    - and see here: https://github.com/scholarslab/traefik
+
 ## Clone the GitHub repo
   - `git clone https://gitlab.com/scholars-lab/womensbios.git`
   - For developing (editing the HTML, CSS, JS) of the website, the static files need to exist in a folder called `static-content`.
@@ -21,27 +26,40 @@ Steps for setting up a local development environment for the project
     ```
   - And uncomment the four lines in docker-compose.yml (make it look like this)
     ```YAML
-      version: '2'
-      services:
-        solr:
-          image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
-          container_name: womensbios_solr
-          restart: always
-          ports:
-           - ${SOLR_PORTS}
-        womenbios:
-          # Uncomment next two lines for development. Requires the Dockerfile to exist.
-          build: 
-            context: .
-          image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.1
-          container_name: womensbios_static
-          depends_on:
-            - solr
-          ports:
-            - ${PORTS}
-          restart: always
-          volumes:
-            - ./static-content:/usr/share/nginx/html
+    version: '2'
+    services:
+      womensbios_solr:
+        image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
+        container_name: womensbios_solr
+        restart: always
+        ports:
+          - 8983:8983
+        labels:
+          - "traefik.enable=false"
+
+      womenbios_static:
+        # Uncomment next two lines for development. Requires the Dockerfile to exist.
+        #build: 
+        #  context: .
+        image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.2
+        container_name: womensbios_static
+        depends_on:
+          - womensbios_solr
+        restart: always
+        # Uncomment next two lines for development, when needing to edit the static files
+        #volumes:
+        #  - ./static-content:/usr/share/nginx/html
+        labels:
+          - "traefik.enable=true"
+          - "traefik.docker.network=thenetwork"
+          - "traefik.port=80"
+          - "traefik.backend=womensbios_static"
+          - "traefik.frontend.rule=Host:womensbios.lib.virginia.edu"
+
+    networks:
+      default:
+        external:
+          name: thenetwork
     ```
 
 ## Docker commands
@@ -63,7 +81,14 @@ See below for instructions: Making the SOLR image
 
 
 ********************************
-# Production
+# Production 
+## UVA Library preservation
+- This is now set up using Library systems as host.
+    - The static files are in an Amazon S3 bucket
+    - The Solr docker container is running in Amazon Elastic Container Service (ECS)
+    - Library IT pulls the static files and docker image from this GitLab repo and registry
+
+## (on beagle)
 To set up the production server, set up like normal for a new domain:
 
 - Stop the running containers
@@ -111,6 +136,9 @@ Note: The following files in the static-content/ folder were edited from the ori
 - search.html   (modified to connect with the solr docker container for search)
 - solrSearch.js (created new as the connection between the solr database and the search page; displays the results from solr to search.html)
 - style.css     (adds styles for the loading animation)
+- browse?...    (many files were changed to use https instead of http URLs)
+- jquery.min.js (file downloaded and served statically rather than with CDN)
+- font-awesome.css (file downloaded and served statically rather than with CDN)
 
 ********************************
 # Process for creating a clone
