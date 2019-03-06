@@ -2,117 +2,7 @@
 
 This project copies the original (written in Apache Cocoon and Solr), and
 clones it into plain, static HTML, CSS, and Javascript (with the latest version
-of Solr for search?) running in Docker.
-
-********************************
-# Development
-Steps for setting up a local development environment for the project
-
-## Pre-requisits
-- Docker must be installed and running: https://www.docker.com/get-started
-- Traefik must be set up and running: https://traefik.io/
-    - and see here: https://github.com/scholarslab/traefik
-
-## Clone the GitHub repo
-  - `git clone https://gitlab.com/scholars-lab/womensbios.git`
-  - For developing (editing the HTML, CSS, JS) of the website, the static files need to exist in a folder called `static-content`.
-  - Then comment out the line containing 'static-content' in the Dockerfile. (make it look like this)
-    ```YAML
-      FROM nginx
-      COPY default.conf /etc/nginx/conf.d/default.conf
-
-      # Only leave uncommented when making the production ready image
-      #COPY static-content /usr/share/nginx/html
-    ```
-  - And uncomment the four lines in docker-compose.yml (make it look like this)
-    ```YAML
-    version: '2'
-    services:
-      womensbios_solr:
-        image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
-        container_name: womensbios_solr
-        restart: always
-        ports:
-          - 8983:8983
-        labels:
-          - "traefik.enable=false"
-
-      womenbios_static:
-        # Uncomment next two lines for development. Requires the Dockerfile to exist.
-        #build: 
-        #  context: .
-        image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.2
-        container_name: womensbios_static
-        depends_on:
-          - womensbios_solr
-        restart: always
-        # Uncomment next two lines for development, when needing to edit the static files
-        #volumes:
-        #  - ./static-content:/usr/share/nginx/html
-        labels:
-          - "traefik.enable=true"
-          - "traefik.docker.network=thenetwork"
-          - "traefik.port=80"
-          - "traefik.backend=womensbios_static"
-          - "traefik.frontend.rule=Host:womensbios.lib.virginia.edu"
-
-    networks:
-      default:
-        external:
-          name: thenetwork
-    ```
-
-## Docker commands
-### To start Docker and see the website
-While in the directory with the docker-compose.yml file
-  - `docker-compose up`
-  - website is available at http://localhost
-
-### To stop Docker
-  - `docker-compose down --volume`
-  - the --volume removes the Docker volume
-
-### To create/modify the STATIC image
-See below for instructions: Making the STATIC image
-
-### To create/modify the SOLR image
-See below for instructions: Making the SOLR image
-
-
-
-********************************
-# Production 
-## UVA Library preservation
-- This is now set up using Library systems as host.
-    - The static files are in an Amazon S3 bucket
-    - The Solr docker container is running in Amazon Elastic Container Service (ECS)
-    - Library IT pulls the static files and docker image from this GitLab repo and registry
-
-## (on beagle)
-To set up the production server, set up like normal for a new domain:
-
-- Stop the running containers
-  - `docker-compose down --volume`
-- Delete the existing docker-compose.yml file
-  - `rm docker-compose.yml`
-- Copy just the docker-compose.yml file from the repo into the webhosting directory (ex. /var/www/womensbios...)
-  - `wget https://gitlab.com/scholars-lab/womensbios/raw/master/docker-compose.yml`
-- Comment out or delete the two 'volume' lines in  'womensbios_static' section of the docker-compose.yml file
-- 
-  ```
-  #volumes:
-  #    - ./static-content:/usr/share/nginx/html
-
-  ```
-- Maker sure these two lines in `docker-compose.yml` are commented out
-  ```
-    #build: 
-    #  context: .
-  ```
-- While in the directory with the docker-compose.yml file, start the containers
-  - `docker-compose up -d` 
-  - use `-d` so that the process runs in the background
-
+of Solr for search) running in Docker containers.
 
 ********************************
 # Folder Structure
@@ -141,9 +31,94 @@ Note: The following files in the static-content/ folder were edited from the ori
 - font-awesome.css (file downloaded and served statically rather than with CDN)
 
 ********************************
-# Process for creating a clone
+# Docker set up
 
-These were the steps used to recreate the old production site from Apache Cocoon and Solr.
+This project utilizes two Docker containers; one to host the Solr service, and
+the other with nginx to serve the static files and act as a reverse proxy to
+allow the nginx container to access the solr container over SSL.
+
+
+```
+                                                  -> request for static file -> serve it      
+INTERNET --> Beagle( Traefik -> nginx container[                                                ] )
+                                                  -> request for solr search -> solr container
+
+```
+
+
+********************************
+# Development
+Steps for setting up a local development environment for the project
+
+## Pre-requisits
+- Docker must be installed and running: https://www.docker.com/get-started
+- Traefik must be set up and running: https://traefik.io/
+    - and see here: https://github.com/scholarslab/traefik
+
+## Clone the GitHub repo
+  - `git clone https://gitlab.com/scholars-lab/womensbios.git`
+
+## Edit your /etc/hosts file
+We can leverage our computer's /etc/hosts file to make it think the domain name
+'womensbios.lib.virginia.edu' should be pointed to our computer. Doing this
+makes our computer serve the content as if it were the web server, and our
+browser will serve the local files, rather than the "real" site.
+
+  - use a code editor with sudo privileges to edit this file
+  - ex using terminal `sudo vim /etc/hosts`
+  - add a line like this at the bottom of the file
+      - `127.0.0.1 womensbios.lib.virginia.edu`
+
+## Docker commands
+### To start Docker and see the website
+While in the directory with the docker-compose.yml file
+
+  - `docker-compose up`
+  - website is available at http://womensbios.lib.virginia.edu
+
+### To stop Docker
+
+  - `docker-compose down`
+  - the --volume removes the Docker volume
+
+
+********************************
+# Production (on beagle)
+
+- Create a folder in /storage
+- Clone the repository `git clone https://gitlab.com/scholars-lab/womensbios.git`
+- Start it up `docker-compose up -d`
+
+
+********************************
+# Process used for creating a clone
+
+## Additional Steps
+These are the additional steps used to create the production version (after the
+below steps were taken, minus the "creating images" steps). In other words,
+these steps are built on after the below steps were done.
+
+Add in files make the nginx proxy work:
+
+- `load-data`: a bash script to load the data from json, the solr config files,
+  and start solr.
+- `solr.in.sh`: enables the settings for Solr to serve over SSL
+- `nginx.conf`: the settings for nginx are moved to the main nginx.conf (as
+  opposed to the default.conf in the conf.d directory). Has the settings for
+  proxying the solr traffic.
+- `managed-schema`: solr config file with the file types 
+
+
+
+
+## Original Steps
+These were the original steps used to recreate the old production site from Apache Cocoon and Solr.
+
+*** The current policy is to run the Dockers using default images (not self-built
+ones) and pulling static files from a directory (basically running it just like
+the development option). So creating Docker images is no longer necessary, but
+leaving steps here for fun and profit.***
+
 
 It consists of creating two images that work together to provide static files and the Solr search.
 The basic steps required to create the images are outlined below, with detailed steps following.
@@ -448,6 +423,7 @@ This change allows the cross origin resource sharing to happen.
   - `docker cp temp-solr:/opt/solr/server/solr-webapp/webapp/WEB-INF/web.xml web.xml`
 - Add to the web.xml right after the `<web-app>` tag
   - See (http://laurenthinoul.com/how-to-enable-cors-in-solr/)
+    - https://opensourceconnections.com/blog/2015/03/26/going-cross-origin-with-solr/
 
   ```xml
   <filter>

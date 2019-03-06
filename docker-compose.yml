@@ -1,32 +1,39 @@
 version: '2'
 services:
-  womensbios_solr:
-    image: registry.gitlab.com/scholars-lab/womensbios/wb-solr:1.0
-    container_name: womensbios_solr
+  wbi_solr:
+    image: solr:7
+    container_name: wbi_solr
     restart: always
-    ports:
-      - 8983:8983
+    volumes:
+      - ./web.xml:/opt/solr/web.xml
+      - ./managed-schema:/opt/solr/managed-schema
+      - ./load-data:/opt/docker-solr/scripts/load-data
+      - ./alldata.json:/opt/solr/datafile.json
+      - ./solr.in.sh:/opt/solr/solr.in.sh
+    entrypoint:
+      - docker-entrypoint.sh
+      - load-data
+      - wbcore
+    expose:
+      - "8983"
     labels:
       - "traefik.enable=false"
 
-  womenbios_static:
-    # Uncomment next two lines for development. Requires the Dockerfile to exist.
-    #build: 
-    #  context: .
-    image: registry.gitlab.com/scholars-lab/womensbios/wb-static:1.2
-    container_name: womensbios_static
+  wbi_static:
+    image: nginx
+    container_name: wbi_static
     depends_on:
-      - womensbios_solr
+      - wbi_solr
     restart: always
-    # Uncomment next two lines for development, when needing to edit the static files
-    #volumes:
-    #  - ./static-content:/usr/share/nginx/html
+    volumes:
+      - ./static-content:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=thenetwork"
       - "traefik.port=80"
-      - "traefik.backend=womensbios_static"
-      - "traefik.frontend.rule=Host:womensbios.lib.virginia.edu"
+      - "traefik.backend=wbi_static"
+      - "traefik.frontend.rule=Host:womensbios.internal.lib.virginia.edu"
 
 networks:
   default:
