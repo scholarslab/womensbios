@@ -33,7 +33,7 @@ services:
       - "traefik.docker.network=thenetwork"
       - "traefik.port=80"
       - "traefik.backend=wbi_static"
-      - "traefik.frontend.rule=Host:womensbios.internal.lib.virginia.edu"
+      - "traefik.frontend.rule=Host:womensbios.lib.virginia.edu"
 
 networks:
   default:

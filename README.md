@@ -10,21 +10,20 @@ of Solr for search) running in Docker containers.
 All of these files are in the git repository (except .env which is created separately on local and production).
 
 ```
-  ├── alldata.json        (data file, contains all of the bibliography information, in JSON format)
-  ├── data                (data folder for the solr container)
-  ├── default.conf        (nginx config file with a change to redirect old URLs to new)
-  ├── Dockerfile          (File to create the nginx image, pulls in the default.conf and files from static-content)
-  ├── docker-compose.yml  (file used by docker, determines which docker settings and images to use)
-  ├── .env                (environment file)
-  ├── myconfig/           (folder containing the solr config files)
-  ├── README.md           (this file)
   ├── static-content/     (folder containing the static html, css, js, image files. the cloned website, not under version control, but in the wb-static image as /usr/share/nginx/html/)
+  ├── load-data           (Bash script that loads solr config files and the data into solr in the correct order.)
+  ├── solr.in.sh          (solr config file to allow serving through SSL)
+  ├── managed-schema      (The filetype settings for the solr index)
   ├── web.xml             (solr config file that allows the javascript in the search.html file to access the solr server)
+  ├── alldata.json        (data file, contains all of the bibliography information, in JSON format)
+  ├── nginx.conf          (nginx config file with a change to redirect old URLs to new, and reverse proxy to put the solr container behind the static/nginx container so that the solr requests are available at the main domain name-without a port-so that it is accessible behing SSL)
+  ├── docker-compose.yml  (file used by docker, determines which docker settings and images to use)
+  ├── README.md           (this file)
 ```
 
 Note: The following files in the static-content/ folder were edited from the originally scraped static versions, or created new.
 - search.html   (modified to connect with the solr docker container for search)
-- solrSearch.js (created new as the connection between the solr database and the search page; displays the results from solr to search.html)
+- Search.js (created new as the connection between the solr database and the search page; displays the results from solr to search.html. This used to be named solrSearch.js, but having 'solr' in the name confilcts with the nginx reverse proxy needed to allow SSL for the domain)
 - style.css     (adds styles for the loading animation)
 - browse?...    (many files were changed to use https instead of http URLs)
 - jquery.min.js (file downloaded and served statically rather than with CDN)
@@ -58,6 +57,11 @@ Steps for setting up a local development environment for the project
 ## Clone the GitHub repo
   - `git clone https://gitlab.com/scholars-lab/womensbios.git`
 
+- Change the following files to use the correct domain name
+  - docker-compose.yml
+  - static-content/Search.js
+  - nginx.conf
+
 ## Edit your /etc/hosts file
 We can leverage our computer's /etc/hosts file to make it think the domain name
 'womensbios.lib.virginia.edu' should be pointed to our computer. Doing this
@@ -87,6 +91,10 @@ While in the directory with the docker-compose.yml file
 
 - Create a folder in /storage
 - Clone the repository `git clone https://gitlab.com/scholars-lab/womensbios.git`
+- Change the following files to use the correct domain name
+  - docker-compose.yml
+  - static-content/Search.js
+  - nginx.conf
 - Start it up `docker-compose up -d`
 
 

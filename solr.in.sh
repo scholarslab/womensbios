@@ -120,9 +120,9 @@ SOLR_SSL_ENABLED=true
 # Uncomment to set SSL-related system properties
 # Be sure to update the paths to the correct keystore for your environment
 SOLR_SSL_KEY_STORE=etc/solr-ssl.keystore.jks
-SOLR_SSL_KEY_STORE_PASSWORD=FaulknerPipes
+SOLR_SSL_KEY_STORE_PASSWORD=LadyJaneGrey
 SOLR_SSL_TRUST_STORE=etc/solr-ssl.keystore.jks
-SOLR_SSL_TRUST_STORE_PASSWORD=FaulknerPipes
+SOLR_SSL_TRUST_STORE_PASSWORD=LadyJaneGrey
 # Require clients to authenticate
 SOLR_SSL_NEED_CLIENT_AUTH=false
 # Enable clients to authenticate (but not require)

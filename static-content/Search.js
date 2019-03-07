@@ -8,7 +8,7 @@
 "use strict";
 
 var SOLR_CONFIG = {
-  "server": "https://womensbios-backend.internal.lib.virginia.edu/solr/wbcore/select?",
+  "server": "https://womensbios.lib.virginia.edu/solr/wbcore/select?",
   "defaultField": "fulltext",
   "rows": 2000
 };
