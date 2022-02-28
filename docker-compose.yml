@@ -1,7 +1,7 @@
 version: '2'
 services:
   wbi_solr:
-    image: solr:7
+    image: solr:8.11.1
     container_name: wbi_solr
     restart: always
     volumes:

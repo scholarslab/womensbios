@@ -101,6 +101,8 @@ While in the directory with the docker-compose.yml file
 ********************************
 # Process used for creating a clone
 
+## This is out of date and will need to be updated to reflect new configuration post Solr 8.11.1
+
 ## Additional Steps
 These are the additional steps used to create the production version (after the
 below steps were taken, minus the "creating images" steps). In other words,

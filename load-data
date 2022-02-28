@@ -27,7 +27,7 @@ else
   # copy config files in place
   echo "Copy config files"
   cp /opt/solr/managed-schema ${CORE_DIR}/conf/managed-schema
-  cp /opt/solr/web.xml /opt/solr/server/solr-webapp/webapp/WEB-INF/web.xml
+  #cp /opt/solr/web.xml /opt/solr/server/solr-webapp/webapp/WEB-INF/web.xml
 
   # start it up again with the new config files in place
   start-local-solr
@@ -65,16 +65,16 @@ cat << "EOF"
 
 EOF
 
-cd /opt/solr/server/etc
-# get the local IP (docker container) to use in the self-signed SSL cert
-theIP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
-echo "Set up a local SSL cert"
-keytool -genkeypair -alias solr-ssl -keyalg RSA -keysize 2048 \
-  -keypass LadyJaneGrey -storepass LadyJaneGrey \
-  -validity 9999 -keystore /opt/solr/server/etc/solr-ssl.keystore.jks \
-  -ext SAN=DNS:localhost,IP:127.0.0.1,IP:$theIP \
-  -dname "CN=localhost, OU=Scholars' Lab, O=University of Virginia, L=Charlottesville, ST=VA, C=US"
+#cd /opt/solr/server/etc
+## get the local IP (docker container) to use in the self-signed SSL cert
+#theIP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
+#echo "Set up a local SSL cert"
+#keytool -genkeypair -alias solr-ssl -keyalg RSA -keysize 2048 \
+#  -keypass LadyJaneGrey -storepass LadyJaneGrey \
+#  -validity 9999 -keystore /opt/solr/server/etc/solr-ssl.keystore.jks \
+#  -ext SAN=DNS:localhost,IP:127.0.0.1,IP:$theIP \
+#  -dname "CN=localhost, OU=Scholars' Lab, O=University of Virginia, L=Charlottesville, ST=VA, C=US"
 
-cp /opt/solr/solr.in.sh /opt/solr/bin/solr.in.sh
+#cp /opt/solr/solr.in.sh /opt/solr/bin/solr.in.sh
 
 exec solr -f
